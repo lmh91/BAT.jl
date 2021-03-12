@@ -446,3 +446,31 @@ const AnyIIDSampleable = Union{
     Distributions.Distribution
 }
 export AnyIIDSampleable
+
+
+
+
+reshape_variate(density::AbstractDensity, new_varshape::AbstractValueShape) = ...
+
+function _reshape_variate_impl(density::AbstractDensity, new_varshape::AbstractValueShape, orig_varshape::AbstractValueShape)
+end
+
+
+
+"""
+    ValueShapes.unshaped(density::AbstractDensity)::AbstractDensity
+
+Returns a density defined over flat real vectors as it's variates.
+"""
+#ValueShapes.unshaped(density::AbstractDensity) = UnshapedDensity(density)
+#ValueShapes.unshaped(density::AbstractDensity, orig_varshape::AbstractValueShape) = UnshapedDensity(density)
+
+ValueShapes.unshaped(density::DistributionDensity) = DistributionDensity(unshaped(density.dist))
+
+function ValueShapes.unshaped(density::PosteriorDensity)
+    orig_varshape = varshape(density)
+    PosteriorDensity(
+        unshaped(getlikelihood(density), orig_varshape)
+        unshaped(getlikelihood(density), orig_varshape)
+    )
+end
